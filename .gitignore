@@ -25,3 +25,11 @@ cargo.log
 # node 
 node_modules
 index.node
+
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
