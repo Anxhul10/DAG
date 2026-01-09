@@ -1,0 +1,41 @@
+name: build
+on: 
+  pull_request:
+  push:
+jobs:
+  cargo-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Set Node 23.0.0
+        uses: actions/setup-node@v3
+        with:
+          node-version: 23.0.0
+
+      - name: Run install
+        uses: borales/actions-yarn@v4
+        with:
+          cmd: install
+
+      - name: cargo build
+        run: yarn cargo-build
+  node-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Set Node 23.0.0
+        uses: actions/setup-node@v3
+        with:
+          node-version: 23.0.0
+
+      - name: Run install
+        uses: borales/actions-yarn@v4
+        with:
+          cmd: install
+
+        run: yarn build
+
+
+
