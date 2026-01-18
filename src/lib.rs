@@ -4,7 +4,13 @@ mod find_pkg_json;
 
 #[neon::export]
 fn runner(name: String) -> String {
-    let _ = find_pkg_json::find_pkg_json();
+    let filter = vec![ ".yarn", "node_modules"];
+    let val = find_pkg_json::find_pkg_json(filter);
+
+    for x in val {
+        println!("{}", x.display());
+    }
+
     format!("hello {name}")
 }
 
