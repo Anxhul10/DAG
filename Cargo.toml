@@ -15,3 +15,4 @@ crate-type = ["cdylib"]
 anyhow = "1.0.100"
 glob = "0.3.3"
 neon = "1.1"
+serde_json = "1.0.149"

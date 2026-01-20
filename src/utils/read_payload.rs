@@ -6,7 +6,7 @@ use std::{
 };
 use serde_json::Value;
 
-pub fn main<P: AsRef<Path>>(path: P) -> Result<Value, Box<dyn Error>> {
+pub fn read_payload<P: AsRef<Path>>(path: P) -> Result<Value, Box<dyn Error>> {
     // Open file in RO mode with buffer
     let file = File::open(path)?;
     let reader = BufReader::new(file);

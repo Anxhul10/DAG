@@ -1,16 +1,27 @@
 // Use #[neon::export] to export Rust functions as JavaScript functions.
 // See more at: https://docs.rs/neon/latest/neon/attr.export.html
 mod find_pkg_json;
+mod utils;
+
+use serde_json::Value;
+
+fn get_pkg_name(path: &str) -> String{
+    let payload: Value = 
+     utils::read_payload::read_payload(path).unwrap();
+    let name = payload.get("name")
+        .expect("file should have FirstName key").to_string();
+    name
+}
+
 
 #[neon::export]
 fn runner(name: String) -> String {
     let filter = vec![ ".yarn", "node_modules"];
     let val = find_pkg_json::find_pkg_json(filter);
-
     for x in val {
         println!("{}", x.display());
     }
-
+    println!("{}",get_pkg_name("package.json"));
     format!("hello {name}")
 }
 
