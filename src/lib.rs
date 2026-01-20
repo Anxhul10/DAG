@@ -15,10 +15,11 @@ fn get_pkg_name(path: String) -> String{
 
 #[neon::export]
 fn runner(name: String) -> String {
+    let mut pkg_names = Vec::new();
     let filter = vec![ ".yarn", "node_modules"];
-    let val = find_pkg_json::find_pkg_json(filter);
-    for x in val {
-        println!("{}",get_pkg_name(x));
+    let paths = find_pkg_json::find_pkg_json(filter);
+    for path in paths {
+        pkg_names.push(get_pkg_name(path));
     }
     format!("hello {name}")
 }
