@@ -5,7 +5,7 @@ mod utils;
 
 use serde_json::Value;
 
-fn get_pkg_name(path: &str) -> String{
+fn get_pkg_name(path: String) -> String{
     let payload: Value = 
      utils::read_payload::read_payload(path).unwrap();
     let name = payload.get("name")
@@ -13,15 +13,13 @@ fn get_pkg_name(path: &str) -> String{
     name
 }
 
-
 #[neon::export]
 fn runner(name: String) -> String {
     let filter = vec![ ".yarn", "node_modules"];
     let val = find_pkg_json::find_pkg_json(filter);
     for x in val {
-        println!("{}", x.display());
+        println!("{}",get_pkg_name(x));
     }
-    println!("{}",get_pkg_name("package.json"));
     format!("hello {name}")
 }
 
