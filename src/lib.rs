@@ -16,7 +16,8 @@ fn get_pkg_name(path: String) -> String {
     name.to_owned()
 }
 
-fn get_dependents(path: &str, pkg_names: &[String]) {
+fn get_dependents(path: &str, pkg_names: &[String]) -> Vec<(String, String)>{
+    let mut graph: Vec<(String, String)> = Vec::new();
     let payload: Value = utils::read_payload::read_payload(path).unwrap();
 
     let name_value = payload.get("name");
@@ -35,20 +36,23 @@ fn get_dependents(path: &str, pkg_names: &[String]) {
             if let Some(obj) = as_object {
                 for (dep, _version) in obj {
                     for pkg in pkg_names {
-                        // checks if the dependency exists on the package.json
-                      if pkg == dep {
-                            println!("found the mathced ependfasf")
+                      // checks if the dependency exists on the package.json
+                        if pkg == dep {
+                            // dependents : dependency
+                            graph.push((pkg_json_name.to_string(), dep.to_string()));
                         }
                     }
                 }
             }
         }
     }
+    graph
 }
 
 #[neon::export]
-fn runner(name: String) -> String {
+fn dag(name: String) -> String {
     let mut pkg_names = Vec::new();
+    let mut res: Vec<(String, String)> = Vec::new();
     let filter = vec![ ".yarn", "node_modules"];
     let paths = find_pkg_json::find_pkg_json(filter);
     for path in paths.clone() {
@@ -56,8 +60,12 @@ fn runner(name: String) -> String {
     }
 
     for path in paths.clone() {
-        get_dependents(&path, &pkg_names);
-        
+        let mut r = get_dependents(&path, &pkg_names);
+        res.append(&mut r);        
+    }
+
+    for (dep, dep_on) in &res {
+        println!("{} -> {}", dep, dep_on);
     }
     format!("hello {name}")
 }
