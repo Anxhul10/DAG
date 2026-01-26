@@ -1,6 +1,6 @@
 # dag-rs
 
-`dag-rs` parses workspace and constructs a Directed Acyclic Graph (DAG) of local package dependencies within a monorepo or similar setups. Each edge in the graph represents a `dependent → dependency` relationship.
+`dag-rs` (Directed Acyclic Graph) parses workspace and constructs a Directed Acyclic Graph (DAG) of local package dependencies within a monorepo or similar setups. Each edge in the graph represents a `dependent → dependency` relationship.
 
 
 ## Installation
