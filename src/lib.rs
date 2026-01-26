@@ -1,7 +1,6 @@
-// Use #[neon::export] to export Rust functions as JavaScript functions.
-// See more at: https://docs.rs/neon/latest/neon/attr.export.html
 mod find_pkg_json;
 mod utils;
+use neon::prelude::*;
 
 use serde_json::Value;
 
@@ -50,22 +49,31 @@ fn get_dependents(path: &str, pkg_names: &[String]) -> Vec<(String, String)>{
 }
 
 #[neon::export]
-fn dag(name: String) -> String {
+fn dag<'a>(cx: &mut FunctionContext<'a>) -> JsResult<'a, JsArray> {
+    let js_array = JsArray::new(cx, 0);
+
     let mut pkg_names = Vec::new();
     let mut res: Vec<(String, String)> = Vec::new();
-    let filter = vec![ ".yarn", "node_modules"];
+
+    let filter = vec![".yarn", "node_modules"];
     let paths = find_pkg_json::find_pkg_json(filter);
+
     for path in paths.clone() {
         pkg_names.push(get_pkg_name(path.clone()));
     }
 
     for path in paths.clone() {
         let mut r = get_dependents(&path, &pkg_names);
-        res.append(&mut r);        
+        res.append(&mut r);
     }
 
-    for (dep, dep_on) in &res {
-        println!("{} -> {}", dep, dep_on);
+    for (i, (dependent, dependency)) in res.into_iter().enumerate() {
+        let entry = cx.empty_object();
+
+        let js_dep = cx.string(dependency);
+        entry.set(cx, dependent.as_str(), js_dep)?; 
+
+        js_array.set(cx, i as u32, entry)?;
     }
-    format!("hello {name}")
+    Ok(js_array)
 }
