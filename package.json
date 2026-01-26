@@ -3,6 +3,13 @@
   "version": "0.1.5",
   "description": "",
   "main": "lib/index.js",
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "lib",
+    "*.node"
+  ],
   "scripts": {
     "test": "cargo test",
     "cargo-build": "cargo build --message-format=json-render-diagnostics > cargo.log",
