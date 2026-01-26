@@ -1,5 +1,11 @@
 # dag
 
+## 0.1.4
+
+### Patch Changes
+
+- returns array of objs of dependency and dependents insted of just objs
+
 ## 0.1.3
 
 ### Patch Changes
