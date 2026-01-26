@@ -2,7 +2,7 @@
   "name": "dag",
   "version": "0.1.4",
   "description": "",
-  "main": "index.node",
+  "main": "lib/index.js",
   "scripts": {
     "test": "cargo test",
     "cargo-build": "cargo build --message-format=json-render-diagnostics > cargo.log",
