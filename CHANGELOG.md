@@ -1,11 +1,5 @@
 # dag
 
-## 0.1.6
-
-### Patch Changes
-
-- ready for publish
-
 ## 0.1.4
 
 ### Patch Changes
