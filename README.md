@@ -13,7 +13,7 @@ yarn add dag-rs
 
 ## Usage
 ```
-import dag from 'dag';
+import dag from 'dag-rs';
 
 for (const obj of dag()) {
     console.log(obj);
