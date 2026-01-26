@@ -1,5 +1,5 @@
 [package]
-name = "dag"
+name = "dag-rs"
 version = "0.1.0"
 authors = ["Anxhul10"]
 license = "MIT"
