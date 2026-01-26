@@ -24,7 +24,6 @@ cargo.log
 
 # node 
 node_modules
-index.node
 
 .pnp.*
 .yarn/*
