@@ -5,12 +5,15 @@ mod utils;
 
 use serde_json::Value;
 
-fn get_pkg_name(path: String) -> String{
-    let payload: Value = 
-     utils::read_payload::read_payload(path).unwrap();
+fn get_pkg_name(path: String) -> String {
+    let payload: Value =
+        utils::read_payload::read_payload(path).unwrap();
+
     let name = payload.get("name")
-        .expect("file should have FirstName key").to_string();
-    name
+        .and_then(|v| v.as_str())
+        .expect("payload should have `name` key");
+
+    name.to_owned()
 }
 
 fn get_dependents(path: &str, pkg_names: &[String]) {
@@ -32,8 +35,10 @@ fn get_dependents(path: &str, pkg_names: &[String]) {
             if let Some(obj) = as_object {
                 for (dep, _version) in obj {
                     for pkg in pkg_names {
-                        println!("{}", pkg.as_str());
-                        println!("{}", dep.to_string());
+                        // checks if the dependency exists on the package.json
+                      if pkg == dep {
+                            println!("found the mathced ependfasf")
+                        }
                     }
                 }
             }
