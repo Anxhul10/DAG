@@ -13,41 +13,34 @@ fn get_pkg_name(path: String) -> String{
     name
 }
 
-fn get_tree_deps(path: String) -> String {    
-    let payload: Value = match utils::read_payload::read_payload(path) {
-        Ok(p) => p,
-        Err(_) => return String::new(),
-    };
+fn get_dependents(path: &str, pkg_names: &[String]) {
+    let payload: Value = utils::read_payload::read_payload(path).unwrap();
 
-    match payload.get("dependencies") {
-        Some(v) => v.to_string(),
-        None => String::new(),
+    let name_value = payload.get("name");
+
+    let pkg_json_name = name_value
+        .and_then(|v| v.as_str())
+        .expect("payload should have `name` key");
+
+    let sections = ["dependencies", "peerDependencies", "devDependencies"];
+
+    for section in &sections {
+        let section_value = payload.get(section);
+
+        if let Some(value) = section_value {
+            let as_object = value.as_object();
+            if let Some(obj) = as_object {
+                for (dep, _version) in obj {
+                    for pkg in pkg_names {
+                        println!("{}", pkg.as_str());
+                        println!("{}", dep.to_string());
+                    }
+                }
+            }
+        }
     }
 }
 
-fn get_tree_dev(path: String, current_pkg: String) -> String {
-    let payload: Value = match utils::read_payload::read_payload(path) {
-        Ok(p) => p,
-        Err(_) => return String::new(),
-    };
-
-    match payload.get("devDependencies") {
-        Some(v) => v.to_string(),
-        None => String::new(),
-    }
-}
-
-fn get_tree_peer(path: String) -> String {    
-    let payload: Value = match utils::read_payload::read_payload(path) {
-        Ok(p) => p,
-        Err(_) => return String::new(),
-    };
-
-    match payload.get("peerDependencies") {
-        Some(v) => v.to_string(),
-        None => String::new(),
-    }
-}
 #[neon::export]
 fn runner(name: String) -> String {
     let mut pkg_names = Vec::new();
@@ -57,12 +50,9 @@ fn runner(name: String) -> String {
         pkg_names.push(get_pkg_name(path.clone()));
     }
 
-    let mut pkg_tracker = 0;
     for path in paths.clone() {
-        let current_pkg = pkg_names[pkg_tracker].clone();
-        let result = get_tree_dev(path.clone(), current_pkg).clone();
-        println!("{}", result);
-        pkg_tracker += 1;
+        get_dependents(&path, &pkg_names);
+        
     }
     format!("hello {name}")
 }
