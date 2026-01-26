@@ -1,18 +1,35 @@
-name: Publish Package to npmjs
+name: Publish to npm
+
 on:
-  release:
-    types: [published]
+  push:
+    tags:
+      - 'v*'
+
 jobs:
-  build:
+  publish:
     runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v4
+
       - uses: actions/setup-node@v4
         with:
-          node-version: '21.0.0'
+          node-version: 20
           registry-url: 'https://registry.npmjs.org'
-          scope: '@octocat'
-      - run: yarn
-      - run: yarn npm publish
+
+      - run: yarn install
+
+      - run: yarn build --if-present
+
+      - name: Publish to npm
+        run: npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Create GitHub Release
+        run: gh release create "${GITHUB_REF#refs/tags/}" --generate-notes
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
