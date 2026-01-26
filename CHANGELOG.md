@@ -1,5 +1,11 @@
 # dag
 
+## 0.2.1
+
+### Patch Changes
+
+- docs: fix import dag
+
 ## 0.2.0
 
 ### Minor Changes
