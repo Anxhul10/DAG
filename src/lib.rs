@@ -49,6 +49,25 @@ fn get_dependents(path: &str, pkg_names: &[String]) -> Vec<(String, String)>{
 }
 
 #[neon::export]
+#[allow(non_snake_case)]
+fn getAffectedPkg(pkg_name: String) {
+    let filter = vec![".yarn", "node_modules"];
+    let paths = find_pkg_json::find_pkg_json(filter);
+    let mut res: Vec<(String, String)> = Vec::new();
+    let mut pkg_names = Vec::new();
+
+    for path in paths.clone() {
+        pkg_names.push(get_pkg_name(path.clone()));
+    }
+
+    for path in paths.clone() {
+        let mut r = get_dependents(&path, &pkg_names);
+        res.append(&mut r);
+    }
+    // res stores the dependents and dependency
+    println!("{}", pkg_name);
+}
+#[neon::export]
 fn dag<'a>(cx: &mut FunctionContext<'a>) -> JsResult<'a, JsArray> {
     let js_array = JsArray::new(cx, 0);
 
