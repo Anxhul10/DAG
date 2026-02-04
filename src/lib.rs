@@ -49,8 +49,7 @@ fn get_dependents(path: &str, pkg_names: &[String]) -> Vec<(String, String)>{
 }
 
 #[neon::export]
-#[allow(non_snake_case)]
-fn getAffectedPkg(pkg_name: String) {
+fn get_affected_pkg(pkg_name: String) {
     let filter = vec![".yarn", "node_modules"];
     let paths = find_pkg_json::find_pkg_json(filter);
     let mut res: Vec<(String, String)> = Vec::new();
@@ -65,6 +64,11 @@ fn getAffectedPkg(pkg_name: String) {
         res.append(&mut r);
     }
     // res stores the dependents and dependency
+    for (_i, (_dependent, dependency)) in res.into_iter().enumerate() {
+        if dependency == pkg_name {
+            println!("pkg found");
+        }
+    }
     println!("{}", pkg_name);
 }
 #[neon::export]
