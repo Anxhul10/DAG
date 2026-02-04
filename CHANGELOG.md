@@ -1,5 +1,11 @@
 # dag
 
+## 0.3.0
+
+### Minor Changes
+
+- add affected pkg fn from dag-rs
+
 ## 0.2.1
 
 ### Patch Changes
