@@ -12,7 +12,7 @@ yarn add dag-rs
 ```
 
 > [!NOTE]
-> Right now  `getAffectedPkg` doesnt support circular dependency it might log `[1]    867885 segmentation fault (core dumped)  node usage.cjs
+> Right now  `getAffectedPkg` doesnt support circular dependency it might log `[1]    867885 segmentation fault (core dumped)  node usage.cjs`
 
 ## Usage
 
