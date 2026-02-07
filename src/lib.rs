@@ -57,14 +57,17 @@ fn recursion(pkg_name: String, res: Vec<(String, String)>, duplicate_dependents:
     }
     return;
 }
+
 #[neon::export]
-fn get_affected_pkg(pkg_name: String) {
+fn get_affected_pkg<'a>(cx: &mut FunctionContext<'a>, pkg_name: String) -> JsResult<'a, JsArray>{
     let filter = vec![".yarn", "node_modules"];
     let paths = find_pkg_json::find_pkg_json(filter);
     let mut res: Vec<(String, String)> = Vec::new();
     let mut pkg_names = Vec::new();
     let mut unique_dependents = HashSet::<String>::new();
     let mut duplicate_dependents = Vec::new();
+    let mut dependents = Vec::new();
+    let dependents_js = JsArray::new(cx, 0);
 
     for path in paths.clone() {
         pkg_names.push(get_pkg_name(path.clone()));
@@ -77,19 +80,20 @@ fn get_affected_pkg(pkg_name: String) {
 
     recursion(pkg_name, res,&mut duplicate_dependents);
 
-    if duplicate_dependents.len() == 0  {
-        println!("No dependents found on this pkg");
+    for pkg in duplicate_dependents {
+        unique_dependents.insert(pkg);
     }
-    else {
-        for pkg in duplicate_dependents {
-            unique_dependents.insert(pkg);
-        }
-        for pkg in unique_dependents {
-            println!("{}", pkg);
-        }
-
+    for pkg in unique_dependents.clone() {
+        dependents.push(pkg);
     }
+    
+    for (i, s) in unique_dependents.iter().enumerate() {
+        let v = cx.string(s);
+        dependents_js.set(cx, i as u32, v)?;
+    }
+    Ok(dependents_js)
 }
+
 #[neon::export]
 fn dag<'a>(cx: &mut FunctionContext<'a>) -> JsResult<'a, JsArray> {
     let js_array = JsArray::new(cx, 0);
