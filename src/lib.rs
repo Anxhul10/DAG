@@ -48,11 +48,11 @@ fn get_dependents(path: &str, pkg_names: &[String]) -> Vec<(String, String)>{
     graph
 }
 
-fn recursion(pkg_name: String, res: Vec<(String, String)>, duplicate_dependents:&mut Vec<String>) {
+fn get_dependents_recursively(pkg_name: String, res: Vec<(String, String)>, duplicate_dependents:&mut Vec<String>) {
     for (_i, (dependent, dependency)) in res.clone().into_iter().enumerate() {
         if dependency == pkg_name {
             duplicate_dependents.push(dependent.clone());
-            recursion(dependent.clone(), res.clone(),duplicate_dependents);
+            get_dependents_recursively(dependent.clone(), res.clone(),duplicate_dependents);
         }
     }
     return;
@@ -78,7 +78,7 @@ fn get_affected_pkg<'a>(cx: &mut FunctionContext<'a>, pkg_name: String) -> JsRes
         res.append(&mut r);
     }
 
-    recursion(pkg_name, res,&mut duplicate_dependents);
+    get_dependents_recursively(pkg_name, res,&mut duplicate_dependents);
 
     for pkg in duplicate_dependents {
         unique_dependents.insert(pkg);
