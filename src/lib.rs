@@ -63,7 +63,7 @@ fn get_affected_pkg(pkg_name: String) {
     let paths = find_pkg_json::find_pkg_json(filter);
     let mut res: Vec<(String, String)> = Vec::new();
     let mut pkg_names = Vec::new();
-    let mut hash_store = HashSet::<String>::new();
+    let mut unique_dependents = HashSet::<String>::new();
     let mut duplicate_dependents = Vec::new();
 
     for path in paths.clone() {
@@ -82,9 +82,9 @@ fn get_affected_pkg(pkg_name: String) {
     }
     else {
         for pkg in duplicate_dependents {
-            hash_store.insert(pkg);
+            unique_dependents.insert(pkg);
         }
-        for pkg in hash_store {
+        for pkg in unique_dependents {
             println!("{}", pkg);
         }
 
