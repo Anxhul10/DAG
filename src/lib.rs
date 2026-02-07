@@ -1,7 +1,7 @@
 mod find_pkg_json;
 mod utils;
 use neon::prelude::*;
-
+use std::collections::HashSet;
 use serde_json::Value;
 
 fn get_pkg_name(path: String) -> String {
@@ -46,6 +46,52 @@ fn get_dependents(path: &str, pkg_names: &[String]) -> Vec<(String, String)>{
         }
     }
     graph
+}
+
+fn get_dependents_recursively(pkg_name: String, res: Vec<(String, String)>, duplicate_dependents:&mut Vec<String>) {
+    for (_i, (dependent, dependency)) in res.clone().into_iter().enumerate() {
+        if dependency == pkg_name {
+            duplicate_dependents.push(dependent.clone());
+            get_dependents_recursively(dependent.clone(), res.clone(),duplicate_dependents);
+        }
+    }
+    return;
+}
+
+#[neon::export]
+fn get_affected_pkg<'a>(cx: &mut FunctionContext<'a>, pkg_name: String) -> JsResult<'a, JsArray>{
+    let filter = vec![".yarn", "node_modules"];
+    let paths = find_pkg_json::find_pkg_json(filter);
+    let mut res: Vec<(String, String)> = Vec::new();
+    let mut pkg_names = Vec::new();
+    let mut unique_dependents = HashSet::<String>::new();
+    let mut duplicate_dependents = Vec::new();
+    let mut dependents = Vec::new();
+    let dependents_js = JsArray::new(cx, 0);
+
+    for path in paths.clone() {
+        pkg_names.push(get_pkg_name(path.clone()));
+    }
+
+    for path in paths.clone() {
+        let mut r = get_dependents(&path, &pkg_names);
+        res.append(&mut r);
+    }
+
+    get_dependents_recursively(pkg_name, res,&mut duplicate_dependents);
+
+    for pkg in duplicate_dependents {
+        unique_dependents.insert(pkg);
+    }
+    for pkg in unique_dependents.clone() {
+        dependents.push(pkg);
+    }
+    
+    for (i, s) in unique_dependents.iter().enumerate() {
+        let v = cx.string(s);
+        dependents_js.set(cx, i as u32, v)?;
+    }
+    Ok(dependents_js)
 }
 
 #[neon::export]

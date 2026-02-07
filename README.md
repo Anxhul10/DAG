@@ -12,29 +12,148 @@ yarn add dag-rs
 ```
 
 ## Usage
+
+### CommonJS
 ```
-import dag from 'dag-rs';
+const { dag, getAffectedPkg } = require('dag-rs');
 
 for (const obj of dag()) {
     console.log(obj);
 }
+
+for (const obj of getAffectedPkg("@rocket.chat/fuselage")) {
+    console.log(obj);
+}
 ```
 
-## Example Output `(dependent → dependency)`:
+### ESM
 ```
+import { dag, getAffectedPkg } from 'dag-rs';
+
+for (const obj of dag()) {
+  console.log(obj);
+}
+
+for (const obj of getAffectedPkg("@rocket.chat/fuselage")) {
+    console.log(obj);
+}
+```
+
+## Example Output :
+### getAffectedPkg("@rocket.chat/fuselage") → returns all the direct , transitive , circular dependency 
+```
+// dependents of @rocket.chat/fuselage package
+
+@rocket.chat/layout
+@rocket.chat/fuselage-toastbar
+@rocket.chat/fuselage-forms
+@rocket.chat/onboarding-ui
+
+```
+
+## Example Output:
+### dag() → returns all packages in the project
+
+```
+// dependent : dependency
+
+{ '@rocket.chat/fuselage-monorepo': '@rocket.chat/prettier-config' }
+{ '@rocket.chat/fuselage-monorepo': 'update-readme' }
+{ '@rocket.chat/css-in-js': '@rocket.chat/css-supports' }
+{ '@rocket.chat/css-in-js': '@rocket.chat/memo' }
+{
+  '@rocket.chat/css-in-js': '@rocket.chat/stylis-logical-props-middleware'
+}
+{ '@rocket.chat/css-in-js': 'lint-all' }
+{ '@rocket.chat/css-supports': '@rocket.chat/memo' }
+{ '@rocket.chat/css-supports': 'lint-all' }
+{ '@rocket.chat/emitter': 'lint-all' }
+{ '@rocket.chat/fuselage': '@rocket.chat/css-in-js' }
+{ '@rocket.chat/fuselage': '@rocket.chat/css-supports' }
+{ '@rocket.chat/fuselage': '@rocket.chat/fuselage-tokens' }
+{ '@rocket.chat/fuselage': '@rocket.chat/memo' }
+{ '@rocket.chat/fuselage': '@rocket.chat/styled' }
+{ '@rocket.chat/fuselage': '@rocket.chat/fuselage-hooks' }
+{ '@rocket.chat/fuselage': '@rocket.chat/icons' }
+{ '@rocket.chat/fuselage': '@rocket.chat/fuselage-hooks' }
+{ '@rocket.chat/fuselage': '@rocket.chat/icons' }
+{ '@rocket.chat/fuselage': '@rocket.chat/storybook-dark-mode' }
+{ '@rocket.chat/fuselage': 'lint-all' }
+{ '@rocket.chat/fuselage': 'testing-utils' }
+{ '@rocket.chat/fuselage-forms': '@rocket.chat/emitter' }
+{ '@rocket.chat/fuselage-forms': '@rocket.chat/fuselage' }
+{ '@rocket.chat/fuselage-forms': '@rocket.chat/fuselage-hooks' }
+{ '@rocket.chat/fuselage-forms': '@rocket.chat/fuselage' }
+{ '@rocket.chat/fuselage-forms': '@rocket.chat/fuselage-tokens' }
+{ '@rocket.chat/fuselage-forms': '@rocket.chat/storybook-dark-mode' }
+{ '@rocket.chat/fuselage-forms': 'lint-all' }
+{ '@rocket.chat/fuselage-hooks': '@rocket.chat/emitter' }
+{ '@rocket.chat/fuselage-hooks': '@rocket.chat/fuselage-tokens' }
+{ '@rocket.chat/fuselage-hooks': '@rocket.chat/emitter' }
+{ '@rocket.chat/fuselage-hooks': '@rocket.chat/fuselage-tokens' }
+{ '@rocket.chat/fuselage-hooks': 'lint-all' }
+{ '@rocket.chat/fuselage-hooks': 'testing-utils' }
+{ '@rocket.chat/fuselage-toastbar': '@rocket.chat/fuselage' }
+{ '@rocket.chat/fuselage-toastbar': '@rocket.chat/fuselage-hooks' }
+{ '@rocket.chat/fuselage-toastbar': '@rocket.chat/styled' }
+{ '@rocket.chat/fuselage-toastbar': '@rocket.chat/fuselage' }
+{ '@rocket.chat/fuselage-toastbar': '@rocket.chat/fuselage-hooks' }
+{ '@rocket.chat/fuselage-toastbar': '@rocket.chat/fuselage-tokens' }
+{ '@rocket.chat/fuselage-toastbar': '@rocket.chat/layout' }
+{
+  '@rocket.chat/fuselage-toastbar': '@rocket.chat/storybook-dark-mode'
+}
+{ '@rocket.chat/fuselage-toastbar': '@rocket.chat/styled' }
+{ '@rocket.chat/fuselage-toastbar': 'lint-all' }
+{ '@rocket.chat/fuselage-tokens': 'build-design-tokens' }
+{ '@rocket.chat/fuselage-tokens': 'lint-all' }
+{ '@rocket.chat/icons': 'build-icons' }
+{ '@rocket.chat/icons': 'lint-all' }
+{ '@rocket.chat/layout': '@rocket.chat/fuselage' }
+{ '@rocket.chat/layout': '@rocket.chat/fuselage' }
+{ '@rocket.chat/layout': '@rocket.chat/fuselage-tokens' }
+{ '@rocket.chat/layout': '@rocket.chat/storybook-dark-mode' }
+{ '@rocket.chat/layout': 'lint-all' }
+{ '@rocket.chat/logo': '@rocket.chat/fuselage-hooks' }
+{ '@rocket.chat/logo': '@rocket.chat/styled' }
+{ '@rocket.chat/logo': '@rocket.chat/fuselage-tokens' }
+{ '@rocket.chat/logo': 'build-logo' }
+{ '@rocket.chat/logo': 'lint-all' }
+{ '@rocket.chat/memo': 'lint-all' }
+{ '@rocket.chat/mp3-encoder': 'lint-all' }
 { '@rocket.chat/onboarding-ui': '@rocket.chat/fuselage' }
 { '@rocket.chat/onboarding-ui': '@rocket.chat/fuselage-hooks' }
 { '@rocket.chat/onboarding-ui': '@rocket.chat/icons' }
 { '@rocket.chat/onboarding-ui': '@rocket.chat/layout' }
-
-{ '@rocket.chat/fuselage': 'lint-all' }
-{ '@rocket.chat/fuselage': 'testing-utils' }
-
-{ '@rocket.chat/fuselage-forms': '@rocket.chat/emitter' }
-{ '@rocket.chat/fuselage-forms': '@rocket.chat/fuselage' }
-{ '@rocket.chat/fuselage-forms': '@rocket.chat/fuselage-hooks' }
-{ '@rocket.chat/fuselage-forms': '@rocket.chat/fuselage-tokens' }
-{ '@rocket.chat/fuselage-forms': 'lint-all' }
+{ '@rocket.chat/onboarding-ui': '@rocket.chat/logo' }
+{ '@rocket.chat/onboarding-ui': '@rocket.chat/styled' }
+{ '@rocket.chat/onboarding-ui': '@rocket.chat/fuselage' }
+{ '@rocket.chat/onboarding-ui': '@rocket.chat/fuselage-hooks' }
+{ '@rocket.chat/onboarding-ui': '@rocket.chat/fuselage-tokens' }
+{ '@rocket.chat/onboarding-ui': '@rocket.chat/icons' }
+{ '@rocket.chat/onboarding-ui': '@rocket.chat/layout' }
+{ '@rocket.chat/onboarding-ui': '@rocket.chat/logo' }
+{ '@rocket.chat/onboarding-ui': '@rocket.chat/storybook-dark-mode' }
+{ '@rocket.chat/onboarding-ui': '@rocket.chat/styled' }
+{ '@rocket.chat/onboarding-ui': 'lint-all' }
+{ '@rocket.chat/prettier-config': 'lint-all' }
+{ '@rocket.chat/storybook-dark-mode': 'lint-all' }
+{ '@rocket.chat/string-helpers': 'lint-all' }
+{ '@rocket.chat/styled': '@rocket.chat/css-in-js' }
+{ '@rocket.chat/styled': 'lint-all' }
+{
+  '@rocket.chat/stylis-logical-props-middleware': '@rocket.chat/css-supports'
+}
+{ '@rocket.chat/stylis-logical-props-middleware': 'lint-all' }
+{ 'build-design-tokens': 'tools-utils' }
+{ 'build-design-tokens': 'lint-all' }
+{ 'build-icons': 'tools-utils' }
+{ 'build-icons': 'lint-all' }
+{ 'build-logo': 'lint-all' }
+{ 'build-logo': 'tools-utils' }
+{ 'testing-utils': 'lint-all' }
+{ 'tools-utils': 'lint-all' }
+{ 'update-readme': 'lint-all' }
 ```
 
 ## Building dag-rs
@@ -50,19 +169,6 @@ $ yarn build
 
 ## Project Layout
 
-The directory structure of this project is:
-
-```
-dag/
-├── Cargo.toml
-├── README.md
-├── src/
-|   └── lib.rs
-├── index.node
-├── package.json
-└── target/
-```
-
 | Entry          | Purpose                                                                                                                                  |
 |----------------|------------------------------------------------------------------------------------------------------------------------------------------|
 | `Cargo.toml`   | The Cargo [manifest file](https://doc.rust-lang.org/cargo/reference/manifest.html), which informs the `cargo` command.                   |
@@ -73,4 +179,5 @@ dag/
 | `package.json` | The npm [manifest file](https://docs.npmjs.com/cli/v7/configuring-npm/package-json), which informs the `npm` command.                    |
 | `target/`      | Binary artifacts generated by the Rust build.                                                                                            |
 
-
+## Contribution
+All forms of contribution are welcome!

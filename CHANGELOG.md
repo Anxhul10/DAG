@@ -1,6 +1,10 @@
-# dag
-
 ## 0.2.1
+
+## 0.3.0
+
+### Minor Changes
+
+- add getAffectedPkg function which return the dependents including direct, transitive and circular dependency
 
 ### Patch Changes
 
