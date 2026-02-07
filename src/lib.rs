@@ -1,7 +1,7 @@
 mod find_pkg_json;
 mod utils;
 use neon::prelude::*;
-
+use std::collections::HashSet;
 use serde_json::Value;
 
 fn get_pkg_name(path: String) -> String {
@@ -48,12 +48,22 @@ fn get_dependents(path: &str, pkg_names: &[String]) -> Vec<(String, String)>{
     graph
 }
 
+fn recursion(pkg_name: String, res: Vec<(String, String)>, addon:&mut Vec<String>) {
+    for (_i, (dependent, dependency)) in res.clone().into_iter().enumerate() {
+        if dependency == pkg_name {
+            addon.push(dependent.clone());
+            recursion(dependent.clone(), res.clone(),addon);
+        }
+    }
+    return;
+}
 #[neon::export]
 fn get_affected_pkg(pkg_name: String) {
     let filter = vec![".yarn", "node_modules"];
     let paths = find_pkg_json::find_pkg_json(filter);
     let mut res: Vec<(String, String)> = Vec::new();
     let mut pkg_names = Vec::new();
+    let mut hash_store = HashSet::<String>::new();
 
     for path in paths.clone() {
         pkg_names.push(get_pkg_name(path.clone()));
@@ -63,13 +73,20 @@ fn get_affected_pkg(pkg_name: String) {
         let mut r = get_dependents(&path, &pkg_names);
         res.append(&mut r);
     }
-    // res stores the dependents and dependency
-    for (_i, (_dependent, dependency)) in res.into_iter().enumerate() {
-        if dependency == pkg_name {
-            println!("pkg found");
-        }
+    let mut addon = Vec::new();
+    recursion(pkg_name, res,&mut addon);
+    if addon.len() == 0  {
+        println!("No dependents found on this pkg");
     }
-    println!("{}", pkg_name);
+    else {
+        for pkg in addon {
+            hash_store.insert(pkg);
+        }
+        for pkg in hash_store {
+            println!("{}", pkg);
+        }
+
+    }
 }
 #[neon::export]
 fn dag<'a>(cx: &mut FunctionContext<'a>) -> JsResult<'a, JsArray> {
