@@ -48,11 +48,11 @@ fn get_dependents(path: &str, pkg_names: &[String]) -> Vec<(String, String)>{
     graph
 }
 
-fn recursion(pkg_name: String, res: Vec<(String, String)>, addon:&mut Vec<String>) {
+fn recursion(pkg_name: String, res: Vec<(String, String)>, duplicate_dependents:&mut Vec<String>) {
     for (_i, (dependent, dependency)) in res.clone().into_iter().enumerate() {
         if dependency == pkg_name {
-            addon.push(dependent.clone());
-            recursion(dependent.clone(), res.clone(),addon);
+            duplicate_dependents.push(dependent.clone());
+            recursion(dependent.clone(), res.clone(),duplicate_dependents);
         }
     }
     return;
@@ -64,6 +64,7 @@ fn get_affected_pkg(pkg_name: String) {
     let mut res: Vec<(String, String)> = Vec::new();
     let mut pkg_names = Vec::new();
     let mut hash_store = HashSet::<String>::new();
+    let mut duplicate_dependents = Vec::new();
 
     for path in paths.clone() {
         pkg_names.push(get_pkg_name(path.clone()));
@@ -73,13 +74,14 @@ fn get_affected_pkg(pkg_name: String) {
         let mut r = get_dependents(&path, &pkg_names);
         res.append(&mut r);
     }
-    let mut addon = Vec::new();
-    recursion(pkg_name, res,&mut addon);
-    if addon.len() == 0  {
+
+    recursion(pkg_name, res,&mut duplicate_dependents);
+
+    if duplicate_dependents.len() == 0  {
         println!("No dependents found on this pkg");
     }
     else {
-        for pkg in addon {
+        for pkg in duplicate_dependents {
             hash_store.insert(pkg);
         }
         for pkg in hash_store {
