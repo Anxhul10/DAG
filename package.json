@@ -1,6 +1,6 @@
 {
   "name": "dag-rs",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "description": "",
   "main": "lib/index.js",
   "publishConfig": {
@@ -10,6 +10,12 @@
     "lib",
     "*.node"
   ],
+  "exports": {
+    ".": {
+      "require": "./lib/index.cjs",
+      "import": "./lib/index.mjs"
+    }
+  },
   "scripts": {
     "test": "cargo test",
     "cargo-build": "cargo build --message-format=json-render-diagnostics > cargo.log",
