@@ -13,7 +13,7 @@ yarn add dag-rs
 
 ## Usage
 
-### CommonJs
+### CommonJS
 ```
 const { dag, getAffectedPkg } = require('dag-rs');
 
