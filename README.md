@@ -11,6 +11,9 @@ npm install dag-rs
 yarn add dag-rs
 ```
 
+> [!NOTE]
+> Right now  `getAffectedPkg` doesnt support circular dependency it might log `[1]    867885 segmentation fault (core dumped)  node usage.cjs
+
 ## Usage
 
 ### CommonJS
@@ -40,7 +43,7 @@ for (const obj of getAffectedPkg("@rocket.chat/fuselage")) {
 ```
 
 ## Example Output :
-### getAffectedPkg("@rocket.chat/fuselage") → returns all the direct , transitive , circular dependency 
+### getAffectedPkg("@rocket.chat/fuselage") → returns all the direct , transitive dependencies
 ```
 // dependents of @rocket.chat/fuselage package
 

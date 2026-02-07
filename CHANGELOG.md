@@ -1,5 +1,11 @@
 ## 0.3.0
 
+## 0.3.1
+
+### Patch Changes
+
+- add warning before using getAffected package on circular dependent monorepo
+
 ### Minor Changes
 
 - add getAffectedPkg function which return the dependents including direct, transitive and circular dependency
