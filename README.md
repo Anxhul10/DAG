@@ -1,3 +1,7 @@
+# Demo
+
+[![Watch the video](https://vumbnail.com/1169357006.jpg)](https://vimeo.com/1169357006?share=copy)
+
 # dag-rs
 
 `dag-rs` (Directed Acyclic Graph) parses workspace and constructs a Directed Acyclic Graph (DAG) of local package dependencies within a monorepo or similar setups. Each edge in the graph represents a `dependent → dependency` relationship.
@@ -16,33 +20,77 @@ yarn add dag-rs
 
 ## Usage
 
-### CommonJS
-```
-const { dag, getAffectedPkg } = require('dag-rs');
-
-for (const obj of dag()) {
-    console.log(obj);
-}
-
-for (const obj of getAffectedPkg("@rocket.chat/fuselage")) {
-    console.log(obj);
-}
-```
-
 ### ESM
-```
-import { dag, getAffectedPkg } from 'dag-rs';
+Get the full dependency graph:
 
-for (const obj of dag()) {
-  console.log(obj);
+```js
+// dag-rs.mjs
+import { dag } from 'dag-rs';
+
+for (const edge of dag()) {
+  console.log(edge);
 }
+```
 
-for (const obj of getAffectedPkg("@rocket.chat/fuselage")) {
-    console.log(obj);
+Example structure:
+```
+packages/
+  core/
+  ui/        (depends on core)
+  app/       (depends on ui)
+  web/       (depends on ui)
+```
+
+Output:
+
+```js
+// dependent : dependency
+
+{ 'ui': 'core' }
+{ 'app': 'ui' }
+{ 'web': 'ui' }
+```
+
+
+This means:
+
+- `ui` depends on `core`
+- `app` depends on `ui`
+- `web` depends on `ui`
+
+Find all packages affected by a specific package:
+
+```js
+import { getAffectedPkg } from 'dag-rs';
+
+const pkg = "core";
+
+for (const affected of getAffectedPkg(pkg)) {
+  console.log(affected);
 }
 ```
 
-## Example Output :
+Output:
+
+```
+ui
+app
+web
+```
+
+This means:
+
+- `ui` directly depends on `core`
+- `app` depends on `ui` → indirectly affected by `core`
+- `web` depends on `ui` → indirectly affected by `core`
+
+
+
+
+## Real-world Example: Rocket.Chat Fuselage
+
+Repository: https://github.com/RocketChat/fuselage
+
 ### getAffectedPkg("@rocket.chat/fuselage") → returns all the direct , transitive dependencies
 ```
 // dependents of @rocket.chat/fuselage package
