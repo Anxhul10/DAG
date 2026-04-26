@@ -1,3 +1,6 @@
+[![npm](https://img.shields.io/npm/v/dag-rs.svg)](https://npmjs.com/package/dag-rs) 
+[![](https://img.shields.io/npm/dt/dag-rs?style=flat&label=downloads&color=3b9648&labelColor=484848&logo=npm)](https://www.npmjs.com/package/dag-rs)
+
 # Demo
 
 [![Watch the video](https://vumbnail.com/1169357006.jpg)](https://vimeo.com/1169357006?share=copy)
